@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from sqlalchemy import text
 from app.database.database import engine
 
+from app.database.base import Base
+from app.models import Equipment
+
 app = FastAPI(
     title="Predictive Equipment Maintenance Platform API",
     description=(
@@ -10,6 +13,8 @@ app = FastAPI(
     ),
     version="1.0.0",
 )
+
+Base.metadata.create_all(bind=engine)
 
 
 @app.get("/", tags=["Health"])
