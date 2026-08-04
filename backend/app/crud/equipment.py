@@ -80,3 +80,13 @@ def update_equipment(
     return equipment    
 
 
+def delete_equipment(
+    db: Session,
+    equipment: Equipment,
+) -> None:
+    """
+    Delete an equipment record.
+    """
+
+    db.delete(equipment)
+    db.commit()

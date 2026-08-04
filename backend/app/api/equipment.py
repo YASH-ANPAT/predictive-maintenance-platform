@@ -12,6 +12,14 @@ from app.schemas.equipment import (
     EquipmentUpdate,
 )
 
+from app.crud.equipment import (
+    create_equipment,
+    get_all_equipment,
+    get_equipment_by_id,
+    update_equipment,
+    delete_equipment,
+)
+
 from sqlalchemy.orm import Session
 
 router = APIRouter(
@@ -90,4 +98,29 @@ def update_existing_equipment(
         db=db,
         equipment=equipment,
         updated_data=updated_data,
+    )
+
+
+@router.delete(
+    "/{equipment_id}",
+    status_code=204,
+)
+def delete_existing_equipment(
+    equipment_id: int,
+    db: Session = Depends(get_db),
+):
+    equipment = get_equipment_by_id(
+        db=db,
+        equipment_id=equipment_id,
+    )
+
+    if equipment is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Equipment not found",
+        )
+
+    delete_equipment(
+        db=db,
+        equipment=equipment,
     )
