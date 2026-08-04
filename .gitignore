@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+
+# Environment variables
+.env
+
+# Models
+trained_models/*.pkl
+
+# IDE
+.vscode/
+
+# Logs
+*.log
+
+# Python cache
+.pytest_cache/
+.mypy_cache/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
