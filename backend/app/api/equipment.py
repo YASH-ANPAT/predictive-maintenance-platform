@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.crud.equipment import (
     create_equipment,
+    get_all_equipment,
     get_equipment_by_id,
 )
 from app.database.database import get_db
@@ -48,3 +49,13 @@ def get_equipment(
         )
 
     return equipment    
+
+
+@router.get(
+    "/",
+    response_model=list[EquipmentResponse],
+)
+def get_all_equipment_endpoint(
+    db: Session = Depends(get_db),
+):
+    return get_all_equipment(db=db)

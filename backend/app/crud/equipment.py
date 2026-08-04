@@ -41,3 +41,18 @@ def get_equipment_by_id(
         .filter(Equipment.id == equipment_id)
         .first()
     )
+    
+    
+def get_all_equipment(
+    db: Session,
+) -> list[Equipment]:
+    """
+    Retrieve all equipment records.
+    """
+
+    return (
+        db.query(Equipment)
+        .order_by(Equipment.id)
+        .all()
+    )    
+    
