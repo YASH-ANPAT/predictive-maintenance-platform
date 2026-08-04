@@ -5,6 +5,8 @@ from app.database.database import engine
 from app.database.base import Base
 from app.models import Equipment
 
+from app.api.equipment import router as equipment_router
+
 app = FastAPI(
     title="Predictive Equipment Maintenance Platform API",
     description=(
@@ -15,6 +17,7 @@ app = FastAPI(
 )
 
 Base.metadata.create_all(bind=engine)
+app.include_router(equipment_router)
 
 
 @app.get("/", tags=["Health"])
