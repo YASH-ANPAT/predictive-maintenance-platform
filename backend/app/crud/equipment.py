@@ -27,3 +27,17 @@ def create_equipment(
     db.refresh(db_equipment)
 
     return db_equipment
+
+def get_equipment_by_id(
+    db: Session,
+    equipment_id: int,
+) -> Equipment | None:
+    """
+    Retrieve a single equipment by its ID.
+    """
+
+    return (
+        db.query(Equipment)
+        .filter(Equipment.id == equipment_id)
+        .first()
+    )
