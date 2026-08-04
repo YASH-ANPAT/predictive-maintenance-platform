@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session
 
 from app.models.equipment import Equipment
-from app.schemas.equipment import EquipmentCreate
+from app.schemas.equipment import (
+    EquipmentCreate,
+    EquipmentUpdate,
+)
 
 
 def create_equipment(
@@ -55,4 +58,25 @@ def get_all_equipment(
         .order_by(Equipment.id)
         .all()
     )    
+        
     
+def update_equipment(
+    db: Session,
+    equipment: Equipment,
+    updated_data: EquipmentUpdate,
+) -> Equipment:
+    """
+    Update an existing equipment record.
+    """
+
+    update_data = updated_data.model_dump(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(equipment, field, value)
+
+    db.commit()
+    db.refresh(equipment)
+
+    return equipment    
+
+
