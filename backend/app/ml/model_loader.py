@@ -1,5 +1,5 @@
 import os
-import pickle
+import joblib
 from pathlib import Path
 from typing import Any
 
@@ -33,12 +33,12 @@ def load_model() -> Any | None:
     model_path = get_model_path()
     try:
         with model_path.open("rb") as model_file:
-            _model = pickle.load(model_file)
+            _model = joblib.load(model_file)
         _model_error = None
     except FileNotFoundError:
         _model = None
         _model_error = f"ML model file not found: {model_path}"
-    except (OSError, pickle.PickleError, EOFError, AttributeError, ImportError) as error:
+    except (OSError, EOFError, AttributeError, ImportError) as error:
         _model = None
         _model_error = f"Unable to load ML model from {model_path}: {error}"
 
