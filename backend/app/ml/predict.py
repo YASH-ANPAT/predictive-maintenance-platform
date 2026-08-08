@@ -1,6 +1,6 @@
 from typing import Any, TypedDict
 
-import numpy as np
+import pandas as pd
 
 from app.ml.feature_engineering import telemetry_to_model_features
 from app.ml.model_loader import get_model
@@ -17,15 +17,14 @@ class PredictionResult(TypedDict):
     recommendation: str
 
 
-def _extract_failure_probability(model: Any, model_features: np.ndarray) -> float:
+def _extract_failure_probability(model: Any, model_features: pd.DataFrame) -> float:
     """Run model inference and normalize the output to a probability."""
     if hasattr(model, "predict_proba"):
         probabilities = model.predict_proba(model_features)
         return float(probabilities[0][1])
 
     raw_prediction = model.predict(model_features)
-    prediction_array = np.asarray(raw_prediction, dtype=float)
-    return float(prediction_array.ravel()[0])
+    return float(raw_prediction[0])
 
 
 def run_prediction(

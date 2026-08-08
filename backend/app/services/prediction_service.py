@@ -11,14 +11,11 @@ from app.models.prediction import Prediction
 from app.services.telemetry_service import get_latest_telemetry
 
 PREDICTION_INPUT_FIELDS = (
-    "temperature",
-    "vibration",
-    "pressure",
-    "rpm",
-    "voltage",
-    "current",
-    "load",
-    "humidity",
+    "air_temperature",
+    "process_temperature",
+    "rotational_speed",
+    "torque",
+    "tool_wear",
 )
 
 
@@ -38,6 +35,7 @@ def prepare_prediction_input(db: Session, equipment_id: int) -> dict[str, Any]:
         "equipment_id": equipment_id,
         "telemetry_id": latest_telemetry.id,
         "recorded_at": latest_telemetry.recorded_at,
+        "machine_type": latest_telemetry.equipment.machine_type,
         "features": {
             field: getattr(latest_telemetry, field)
             for field in PREDICTION_INPUT_FIELDS

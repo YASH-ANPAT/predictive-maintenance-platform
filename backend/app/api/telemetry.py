@@ -12,6 +12,7 @@ from app.schemas.telemetry import (
     TelemetryCreate,
     TelemetryResponse,
 )
+from app.services.telemetry_service import validate_equipment_exists
 
 router = APIRouter(
     prefix="/telemetry",
@@ -27,7 +28,12 @@ router = APIRouter(
 def create_new_telemetry(
     telemetry: TelemetryCreate,
     db: Session = Depends(get_db),
-):
+)-> TelemetryResponse:
+    try:
+        validate_equipment_exists(db, telemetry.equipment_id)
+    except ValueError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+
     return create_telemetry(
         db=db,
         telemetry=telemetry,
@@ -39,7 +45,7 @@ def create_new_telemetry(
 )
 def get_all_telemetry_endpoint(
     db: Session = Depends(get_db),
-):
+) -> list[TelemetryResponse]:
     return get_all_telemetry(db=db)
 
 
@@ -50,7 +56,7 @@ def get_all_telemetry_endpoint(
 def get_telemetry(
     telemetry_id: int,
     db: Session = Depends(get_db),
-):
+) -> TelemetryResponse:
     telemetry = get_telemetry_by_id(
         db=db,
         telemetry_id=telemetry_id,
@@ -72,7 +78,12 @@ def get_telemetry(
 def get_equipment_telemetry_endpoint(
     equipment_id: int,
     db: Session = Depends(get_db),
-):
+) -> list[TelemetryResponse]:
+    try:
+        validate_equipment_exists(db, equipment_id)
+    except ValueError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+
     return get_equipment_telemetry(
         db=db,
         equipment_id=equipment_id,

@@ -8,14 +8,11 @@ from app.crud.telemetry import get_equipment_telemetry
 from app.models.telemetry import Telemetry
 
 TELEMETRY_NUMERIC_FIELDS = (
-    "temperature",
-    "vibration",
-    "pressure",
-    "rpm",
-    "voltage",
-    "current",
-    "load",
-    "humidity",
+    "air_temperature",
+    "process_temperature",
+    "rotational_speed",
+    "torque",
+    "tool_wear",
 )
 
 

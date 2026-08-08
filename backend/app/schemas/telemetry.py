@@ -1,24 +1,27 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TelemetryBase(BaseModel):
-    temperature: float
-    vibration: float
-    pressure: float
-    rpm: int
-    voltage: float
-    current: float
-    load: float
-    humidity: float
+    """Telemetry fields matching the final XGBoost model input contract."""
+
+    air_temperature: float = Field(gt=0)
+    process_temperature: float = Field(gt=0)
+    rotational_speed: int = Field(gt=0)
+    torque: float = Field(ge=0)
+    tool_wear: int = Field(ge=0)
 
 
 class TelemetryCreate(TelemetryBase):
-    equipment_id: int
+    """Validated payload for creating telemetry."""
+
+    equipment_id: int = Field(gt=0)
 
 
 class TelemetryResponse(TelemetryBase):
+    """Telemetry record returned by the API."""
+
     id: int
     equipment_id: int
     recorded_at: datetime

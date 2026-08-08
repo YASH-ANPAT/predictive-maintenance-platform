@@ -31,6 +31,11 @@ class Equipment(Base):
         nullable=False,
     )
 
+    machine_type = Column(
+        String(1),
+        nullable=False,
+    )
+
     manufacturer = Column(
         String(100),
         nullable=True,

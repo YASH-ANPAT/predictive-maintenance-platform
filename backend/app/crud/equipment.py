@@ -19,6 +19,7 @@ def create_equipment(
         equipment_code=equipment.equipment_code,
         name=equipment.name,
         category=equipment.category,
+        machine_type=equipment.machine_type,
         manufacturer=equipment.manufacturer,
         model_number=equipment.model_number,
         installation_date=equipment.installation_date,

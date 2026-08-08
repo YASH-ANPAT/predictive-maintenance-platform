@@ -25,43 +25,28 @@ class Telemetry(Base):
         nullable=False,
     )
 
-    temperature = Column(
+    air_temperature = Column(
         Float,
         nullable=False,
     )
 
-    vibration = Column(
+    process_temperature = Column(
         Float,
         nullable=False,
     )
 
-    pressure = Column(
-        Float,
-        nullable=False,
-    )
-
-    rpm = Column(
+    rotational_speed = Column(
         Integer,
         nullable=False,
     )
 
-    voltage = Column(
+    torque = Column(
         Float,
         nullable=False,
     )
 
-    current = Column(
-        Float,
-        nullable=False,
-    )
-
-    load = Column(
-        Float,
-        nullable=False,
-    )
-
-    humidity = Column(
-        Float,
+    tool_wear = Column(
+        Integer,
         nullable=False,
     )
 
