@@ -7,5 +7,5 @@ psycopg2-binary==2.9.10
 python-dotenv==1.1.1
 pandas==2.3.2
 scikit-learn==1.7.1
-xgboost==3.4.0
+xgboost==3.2.0
 joblib==1.5.2
