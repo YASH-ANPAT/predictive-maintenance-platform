@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from app.database.database import engine
 
@@ -20,6 +21,17 @@ app = FastAPI(
     version="1.0.0",
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(equipment_router)
 app.include_router(maintenance_router)
 app.include_router(prediction_router)
@@ -39,14 +51,14 @@ def health_check():
         "message": "Predictive Equipment Maintenance Platform API is running",
         "version": "1.0.0",
     }
-    
-    
+
+
 @app.get("/db-test", tags=["Health"])
 def database_connection_test():
     with engine.connect() as connection:
         result = connection.execute(text("SELECT 1"))
 
-    return {
-        "database": "connected",
-        "result": result.scalar(),
-    }    
+        return {
+            "database": "connected",
+            "result": result.scalar(),
+        }

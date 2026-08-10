@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, func
+﻿from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, func
 from sqlalchemy.orm import relationship
 
 from app.database.base import Base
@@ -16,6 +16,12 @@ class Prediction(Base):
         nullable=False,
         index=True,
     )
+    telemetry_id = Column(
+        Integer,
+        ForeignKey("telemetry.id"),
+        nullable=True,
+        index=True,
+    )
     failure_probability = Column(Float, nullable=False)
     predicted_failure = Column(Boolean, nullable=False)
     prediction_time = Column(
@@ -27,3 +33,4 @@ class Prediction(Base):
     recommendation = Column(String(1000), nullable=False)
 
     equipment = relationship("Equipment")
+

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+﻿from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.crud.equipment import get_equipment_by_id
@@ -14,6 +14,11 @@ from app.schemas.prediction import PredictionCreate, PredictionResponse
 
 from app.crud.telemetry import get_latest_telemetry
 from app.ml.predict import run_prediction
+from app.ml.explainability import (
+    get_global_feature_importance,
+    get_local_shap_explanation,
+)
+from app.crud.telemetry import get_telemetry_by_id
 
 router = APIRouter(prefix="/prediction", tags=["Prediction"])
 
@@ -40,6 +45,60 @@ def get_all_predictions_endpoint(
 ) -> list[PredictionResponse]:
     """List every recorded prediction."""
     return get_all_predictions(db)
+
+
+@router.get("/explainability/feature-importance")
+def get_feature_importance():
+    """Return global feature importance from the deployed ML model."""
+    return {
+        "features": get_global_feature_importance(),
+    }
+
+
+@router.get("/explainability/{prediction_id}")
+def get_prediction_explanation(
+    prediction_id: int,
+    db: Session = Depends(get_db),
+):
+    """Explain the model contribution for one recorded prediction."""
+
+    prediction = get_prediction_by_id(db, prediction_id)
+
+    if prediction is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Prediction not found",
+        )
+
+    if prediction.telemetry_id is None:
+        raise HTTPException(
+            status_code=422,
+            detail="This prediction is not linked to telemetry and cannot be explained.",
+        )
+
+    telemetry = get_telemetry_by_id(
+        db,
+        prediction.telemetry_id,
+    )
+
+    if telemetry is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Telemetry associated with this prediction was not found.",
+        )
+
+    explanation = get_local_shap_explanation(
+        telemetry,
+    )
+
+    return {
+        "prediction_id": prediction.id,
+        "telemetry_id": prediction.telemetry_id,
+        "failure_probability": prediction.failure_probability,
+        "predicted_failure": prediction.predicted_failure,
+        "model_version": prediction.model_version,
+        "explanation": explanation,
+    }
 
 
 @router.get("/{prediction_id}", response_model=PredictionResponse)
@@ -109,6 +168,7 @@ def run_equipment_prediction(
     # Create prediction schema
     prediction = PredictionCreate(
         equipment_id=equipment_id,
+        telemetry_id=latest_telemetry.id,
         failure_probability=result["failure_probability"],
         predicted_failure=result["predicted_failure"],
         model_version="v1.0",
@@ -117,3 +177,6 @@ def run_equipment_prediction(
 
     # Save to database
     return create_prediction(db, prediction)
+
+
+
