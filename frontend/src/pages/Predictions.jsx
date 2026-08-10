@@ -184,40 +184,34 @@ export default function Predictions() {
     (item) => !item.predicted_failure
   ).length;
 
-  const predictionChartData = useMemo(() => {
-    return history
-      .filter((predictionItem) => predictionItem.telemetry_id)
-      .map((predictionItem) => {
-        const sourceTelemetry = telemetry.find(
-          (item) =>
-            item.id === predictionItem.telemetry_id
-        );
-
-        if (!sourceTelemetry) {
-          return null;
-        }
-
-        return {
-          timestamp: sourceTelemetry.recorded_at,
-          time: new Date(
-            sourceTelemetry.recorded_at
-          ).toLocaleTimeString("en-IN", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          failure_probability:
-            predictionItem.failure_probability * 100,
-          risk_level: predictionItem.risk_level,
-          telemetry_id: predictionItem.telemetry_id,
-        };
-      })
-      .filter(Boolean)
-      .sort(
-        (a, b) =>
-          new Date(a.timestamp) -
-          new Date(b.timestamp)
-      );
-  }, [history, telemetry]);
+const predictionChartData = useMemo(() => {
+return history
+.filter(
+(predictionItem) =>
+predictionItem.telemetry_id &&
+Number.isFinite(
+Number(predictionItem.failure_probability)
+)
+)
+.map((predictionItem) => ({
+timestamp: predictionItem.prediction_time,
+time: new Date(
+predictionItem.prediction_time
+).toLocaleTimeString("en-IN", {
+hour: "2-digit",
+minute: "2-digit",
+}),
+failure_probability:
+Number(predictionItem.failure_probability) * 100,
+risk_level: predictionItem.risk_level,
+telemetry_id: predictionItem.telemetry_id,
+}))
+.sort(
+(a, b) =>
+new Date(a.timestamp) -
+new Date(b.timestamp)
+);
+}, [history]);
 
   if (loading) {
     return (
@@ -636,7 +630,7 @@ export default function Predictions() {
                     />
 
                     <XAxis
-                      dataKey="time"
+dataKey="telemetry_id"
                       tick={{ fontSize: 12 }}
                     />
 

@@ -72,21 +72,15 @@ export default function Telemetry() {
   );
 
   const chartData = useMemo(
-    () =>
-      telemetry.map((item) => ({
-        ...item,
-        time: new Date(item.recorded_at).toLocaleTimeString(
-          "en-IN",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        ),
-      })),
-    [telemetry]
-  );
-
-  if (loading) {
+  () =>
+    telemetry.map((item, index) => ({
+      ...item,
+      time: `#${index + 1}`,
+      timestamp: item.recorded_at,
+    })),
+  [telemetry]
+);
+if (loading) {
     return (
       <main className="page-state">
         <div>
@@ -297,7 +291,26 @@ export default function Telemetry() {
                 tick={{ fontSize: 12 }}
               />
 
-              <Tooltip />
+              <Tooltip
+            labelFormatter={(label, payload) => {
+              const point = payload?.[0]?.payload;
+
+              if (!point) {
+                return `Telemetry ${label}`;
+              }
+
+              return `Telemetry ${label} · ${new Date(
+                point.timestamp
+              ).toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}`;
+            }}
+          />
 
               <Legend />
 
@@ -372,7 +385,26 @@ export default function Telemetry() {
                 tick={{ fontSize: 12 }}
               />
 
-              <Tooltip />
+              <Tooltip
+            labelFormatter={(label, payload) => {
+              const point = payload?.[0]?.payload;
+
+              if (!point) {
+                return `Telemetry ${label}`;
+              }
+
+              return `Telemetry ${label} · ${new Date(
+                point.timestamp
+              ).toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}`;
+            }}
+          />
 
               <Legend />
 
@@ -528,7 +560,4 @@ function TelemetryValue({
     </div>
   );
 }
-
-
-
 
