@@ -87,6 +87,9 @@ export default function Layout({ children }) {
             Predictive Maintenance Platform
             <br />
             v1.0.0
+            <br/>
+            <br/>
+            By Yash Anpat
           </small>
         </div>
 
