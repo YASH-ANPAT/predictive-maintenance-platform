@@ -108,3 +108,8 @@ The platform follows an end-to-end predictive maintenance workflow:
         │ Predictions  │ │            │ │ Importance   │
         │ Maintenance  │ │            │ │              │
         └──────────────┘ └────────────┘ └──────────────┘
+
+
+
+
+        
